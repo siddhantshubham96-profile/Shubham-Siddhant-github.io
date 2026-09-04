@@ -46,13 +46,16 @@
   header.stuck{border-bottom-color:var(--rule)}
   header .wrap{display:flex;justify-content:space-between;align-items:center;height:66px;gap:24px}
   .brand{font-family:"Fraunces",Georgia,serif;font-size:19px;color:var(--ink);text-decoration:none;white-space:nowrap}
-  nav{display:flex;gap:4px}
+  nav{display:flex;gap:4px;position:relative}
+  nav a{position:relative;z-index:1}
+  .ind{position:absolute;left:0;top:0;width:0;height:0;border-radius:999px;background:var(--mint);opacity:0;z-index:0;
+    transition:transform .35s var(--ease),width .35s var(--ease),height .35s var(--ease),opacity .25s var(--ease)}
   nav a{
     text-decoration:none;color:var(--slate);font-size:15px;padding:6px 12px;border-radius:999px;
     transition:color .2s var(--ease),background-color .2s var(--ease);
   }
   @media (hover:hover){nav a:hover{color:var(--ink);background:#f0f3f4}}
-  nav a[aria-current="true"]{color:var(--ink);background:var(--mint)}
+  nav a[aria-current="true"]{color:var(--ink)}
 
   /* ---------- hero (two-column) ---------- */
   .hero{min-height:min(calc(100vh - 66px),820px);display:flex;align-items:center;padding:48px 0}
@@ -82,8 +85,9 @@
   .rail::before{content:"";position:absolute;left:0;right:0;top:15px;height:2px;background:#33404f}
   .stop{
     position:relative;padding:0 26px 0 0;background:none;border:0;text-align:left;color:inherit;font:inherit;
-    cursor:pointer;border-radius:6px;
+    cursor:pointer;border-radius:6px;display:flex;flex-direction:column;align-items:stretch;justify-content:flex-start;
   }
+  .stop .go{align-self:flex-start;margin-top:auto;padding-top:12px}
   .stop .dot{
     position:absolute;left:0;top:6px;width:20px;height:20px;border-radius:50%;
     background:var(--ink);border:2px solid var(--sea);transition:transform .25s var(--ease),background-color .25s var(--ease);
@@ -92,7 +96,7 @@
   .stop .n{display:block;margin:40px 0 6px;font-family:"Fraunces",Georgia,serif;font-size:13px;color:var(--sea)}
   .stop h3{font-size:21px;color:#fff;margin-bottom:8px}
   .stop p{font-size:15px;color:#b9c1cb;margin:0}
-  .stop .go{display:inline-block;margin-top:12px;font-size:14px;color:var(--sea);border-bottom:1px solid transparent;transition:border-color .2s var(--ease)}
+  .stop .go{display:inline-block;font-size:14px;color:var(--sea);border-bottom:1px solid transparent;transition:border-color .2s var(--ease)}
   .stop:hover .go,.stop:focus-visible .go{border-bottom-color:var(--sea)}
 
   /* ---------- case studies ---------- */
@@ -161,8 +165,101 @@
   .side ul{margin:0 0 26px;padding-left:18px;font-size:15.5px}
   .side li{margin-bottom:6px}
 
-  footer{padding:48px 0 56px;text-align:center}
-  footer p{margin:0 auto 18px;color:var(--slate)}
+  footer{text-align:center;display:flex;align-items:center;justify-content:center;padding:56px 0;
+    min-height:calc(100vh - var(--hdr,66px));min-height:calc(100svh - var(--hdr,66px))}
+  footer h2{font-size:clamp(34px,5vw,56px);line-height:1.05;margin-bottom:16px}
+  footer p{margin:0 auto 22px;color:var(--slate);font-size:18px}
+
+  /* ---------- journey dots in header ---------- */
+  .jdots{display:none;gap:7px;align-items:center;margin-left:18px}
+  .jdots button{
+    width:9px;height:9px;padding:0;border-radius:50%;cursor:pointer;
+    border:1.5px solid #b9c1cb;background:transparent;
+    transition:background-color .3s var(--ease),border-color .3s var(--ease),transform .3s var(--ease);
+  }
+  .jdots button:hover{border-color:var(--green);transform:scale(1.25)}
+  .jdots button.done{background:var(--green);border-color:var(--green)}
+  .jdots button.here{background:var(--green);border-color:var(--green);transform:scale(1.45)}
+  @media (min-width:900px){.jdots{display:flex}}
+
+  /* ---------- hero word stagger ---------- */
+  .hero h1 .w{display:inline-block;opacity:0;transform:translateY(18px);
+    transition:opacity .55s var(--ease),transform .55s var(--ease)}
+  .hero h1.lit .w{opacity:1;transform:none}
+  .hero .fade{opacity:0;transform:translateY(12px);
+    transition:opacity .6s var(--ease) .25s,transform .6s var(--ease) .25s}
+  .hero .fade.lit{opacity:1;transform:none}
+
+  /* ---------- section heading underline ---------- */
+  .sec::after{content:"";display:block;width:44px;height:3px;border-radius:2px;background:var(--green);margin-top:12px;
+    transform:scaleX(0);transform-origin:left center;transition:transform .7s var(--ease) .15s}
+  .journey .sec::after{background:var(--sea)}
+  footer .sec::after{margin-left:auto;margin-right:auto;transform-origin:center}
+  .in .sec::after,.journey.in .sec::after{transform:scaleX(1)}
+
+  /* ---------- cursor glow on the dark section (hover devices only) ---------- */
+  .journey{position:relative;overflow:hidden}
+  .journey::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .5s var(--ease);
+    background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(127,209,185,.14),transparent 62%)}
+  .journey.glow::after{opacity:1}
+  .journey .wrap{position:relative;z-index:1}
+
+  /* ---------- rail thumbnails (tablet/desktop) ---------- */
+  .stop .thumb{display:block;margin-top:14px;border-radius:6px;overflow:hidden;border:1px solid #33404f;aspect-ratio:16/10;background:#22303d;
+    opacity:.7;filter:saturate(.55);transform:translateY(4px);transition:opacity .35s var(--ease),filter .35s var(--ease),transform .35s var(--ease),border-color .35s var(--ease)}
+  .stop .thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+  .stop .thumb:empty{display:none}
+  @media (hover:hover){
+    .stop:hover .thumb,.stop:focus-visible .thumb{opacity:1;filter:none;transform:translateY(0);border-color:var(--sea)}
+  }
+
+  /* ---------- rail draw ---------- */
+  .rail::before{transform:scaleX(0);transform-origin:left center;transition:transform 1.1s var(--ease)}
+  .rail.drawn::before{transform:scaleX(1)}
+  .stop .dot{transform:scale(0)}
+  .rail.drawn .stop .dot{transform:scale(1)}
+  .rail .stop:nth-child(1) .dot{transition-delay:.15s}
+  .rail .stop:nth-child(2) .dot{transition-delay:.35s}
+  .rail .stop:nth-child(3) .dot{transition-delay:.55s}
+  .rail .stop:nth-child(4) .dot{transition-delay:.75s}
+  .stop .n,.stop h3,.stop p,.stop .go{opacity:0;transform:translateY(10px);
+    transition:opacity .5s var(--ease),transform .5s var(--ease)}
+  .rail.drawn .stop .n,.rail.drawn .stop h3,.rail.drawn .stop p,.rail.drawn .stop .go{opacity:1;transform:none}
+  .rail.drawn .stop:nth-child(1) .n,.rail.drawn .stop:nth-child(1) h3,.rail.drawn .stop:nth-child(1) p,.rail.drawn .stop:nth-child(1) .go{transition-delay:.2s}
+  .rail.drawn .stop:nth-child(2) .n,.rail.drawn .stop:nth-child(2) h3,.rail.drawn .stop:nth-child(2) p,.rail.drawn .stop:nth-child(2) .go{transition-delay:.4s}
+  .rail.drawn .stop:nth-child(3) .n,.rail.drawn .stop:nth-child(3) h3,.rail.drawn .stop:nth-child(3) p,.rail.drawn .stop:nth-child(3) .go{transition-delay:.6s}
+  .rail.drawn .stop:nth-child(4) .n,.rail.drawn .stop:nth-child(4) h3,.rail.drawn .stop:nth-child(4) p,.rail.drawn .stop:nth-child(4) .go{transition-delay:.8s}
+  @media (hover:hover){
+    .stop:hover h3{color:var(--sea)}
+    .stop h3{transition:color .25s var(--ease)}
+  }
+
+  /* ---------- case study stagger ---------- */
+  .case>div>*{opacity:0;transform:translateY(14px);
+    transition:opacity .55s var(--ease),transform .55s var(--ease)}
+  .case.in>div>*{opacity:1;transform:none}
+  .case.in>div>*:nth-child(1){transition-delay:.05s}
+  .case.in>div>*:nth-child(2){transition-delay:.13s}
+  .case.in>div>*:nth-child(3){transition-delay:.21s}
+  .case.in>div>*:nth-child(4){transition-delay:.29s}
+  .case.in>div>*:nth-child(5){transition-delay:.37s}
+  .case .shots figure{opacity:0;transform:translateY(20px) scale(.985);
+    transition:opacity .7s var(--ease) .2s,transform .7s var(--ease) .2s}
+  .case.in .shots figure{opacity:1;transform:none}
+  .case .shots.trio figure:nth-child(2){transition-delay:.32s}
+  .case .shots.trio figure:nth-child(3){transition-delay:.44s}
+
+  /* ---------- counters ---------- */
+  .num{font-variant-numeric:tabular-nums;font-weight:600;color:var(--green-deep)}
+
+  /* ---------- platform + timeline rows ---------- */
+  .plist li,.tl li{opacity:0;transform:translateY(12px);
+    transition:opacity .5s var(--ease),transform .5s var(--ease)}
+  .plist li.in,.tl li.in{opacity:1;transform:none}
+
+  /* ---------- lightbox entrance ---------- */
+  #lb img{opacity:0;transform:scale(.97);transition:opacity .28s var(--ease),transform .28s var(--ease)}
+  #lb.shown img{opacity:1;transform:none}
 
   /* ---------- reveal ---------- */
   .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
@@ -172,6 +269,12 @@
     html{scroll-behavior:auto}
     *{transition-duration:.01ms !important;animation-duration:.01ms !important}
     .reveal{opacity:1;transform:none}
+    .reveal,.hero h1 .w,.hero .fade,.stop .n,.stop h3,.stop p,.stop .go,
+    .case>div>*,.case .shots figure,.plist li,.tl li,#lb img{opacity:1;transform:none}
+    .rail::before{transform:none}
+    .stop .dot{transform:scale(1)}
+    .sec::after{transform:none}
+    .journey::after{display:none}
   }
   @media (max-width:900px){
     .rail{grid-template-columns:1fr 1fr;row-gap:34px}
@@ -194,8 +297,11 @@
     .hero .role,.hero .lede{font-size:16px}
     .hero .contact .btn{flex:1 1 auto;justify-content:center}
     .rail{grid-template-columns:1fr;row-gap:26px}
+    .rail::before{transform:scaleY(0);transform-origin:center top}
+    .rail.drawn::before{transform:scaleY(1)}
     .rail::before{display:block;left:9px;right:auto;top:10px;bottom:10px;width:2px;height:auto}
     .stop{padding:0 0 0 34px}
+    .stop .thumb{display:none}
     .stop .dot{top:4px}
     .stop .n{margin:0 0 4px}
     .stop h3{font-size:19px}
@@ -218,6 +324,7 @@
   <div class="wrap">
     <a class="brand" href="#top">Shubham Siddhant</a>
     <nav aria-label="Sections">
+      <span class="ind" aria-hidden="true"></span>
       <a href="#work">Work</a>
       <a href="#platform">Platform</a>
       <a href="#about">About</a>
@@ -232,9 +339,9 @@
     <div class="wrap hero-grid">
       <h1>I build the way people buy health insurance online.</h1>
       <div>
-        <p class="role">Product Manager, Digital Platform Capabilities &amp; AI at Care Health Insurance, Gurugram. Five years on one consumer platform, from Business Analyst to owning the roadmap.</p>
-        <p class="lede">My work sits at every step of the buying journey: an AI assistant that answers the first question, a recommendation engine that picks a plan, a quote page built for decisions rather than clicks, and the rule-driven product engine underneath all of it. Everything below is live.</p>
-        <div class="contact">
+        <p class="role fade">Product Manager, Digital Platform Capabilities &amp; AI at Care Health Insurance, Gurugram. Five years on one consumer platform, from Business Analyst to owning the roadmap.</p>
+        <p class="lede fade">My work sits at every step of the buying journey: an AI assistant that answers the first question, a recommendation engine that picks a plan, a quote page built for decisions rather than clicks, and the rule-driven product engine underneath all of it. Everything below is live.</p>
+        <div class="contact fade">
           <a class="btn primary" href="#work">See the work</a>
           <button class="btn" id="copyMail" type="button" data-mail="siddhant.shubham96@gmail.com">
             <span id="copyLabel">Copy email</span>
@@ -247,15 +354,16 @@
 
   <section class="journey" aria-labelledby="journey-h">
     <div class="wrap">
-      <h2 id="journey-h">One customer journey, four products I own</h2>
+      <h2 id="journey-h" class="sec">One customer journey, four products I own</h2>
       <p class="intro">Follow a visitor from landing page to policy. Each stop is something I shipped. Pick one to jump to the case study.</p>
       <div class="rail">
         <button class="stop" type="button" data-target="captain-care">
           <span class="dot" aria-hidden="true"></span>
           <span class="n">Stop 1</span>
           <h3>Ask a question</h3>
-          <p>A conversational assistant grounded on product documents and IRDAI rules answers before a form is ever filled.</p>
+          <p>An AI assistant grounded on product documents and IRDAI rules answers before any form is filled.</p>
           <span class="go">Read the case study</span>
+          <span class="thumb" aria-hidden="true"></span>
         </button>
         <button class="stop" type="button" data-target="recommendation">
           <span class="dot" aria-hidden="true"></span>
@@ -263,6 +371,7 @@
           <h3>Get a recommendation</h3>
           <p>The premium calculator turns pin code and family size into a ranked shortlist with a plan already chosen.</p>
           <span class="go">Read the case study</span>
+          <span class="thumb" aria-hidden="true"></span>
         </button>
         <button class="stop" type="button" data-target="quote-page">
           <span class="dot" aria-hidden="true"></span>
@@ -270,6 +379,7 @@
           <h3>Decide with confidence</h3>
           <p>A rebuilt quote page that explains sum insured, tenure, payment plans and add-ons in context.</p>
           <span class="go">Read the case study</span>
+          <span class="thumb" aria-hidden="true"></span>
         </button>
         <button class="stop" type="button" data-target="product-engine">
           <span class="dot" aria-hidden="true"></span>
@@ -277,6 +387,7 @@
           <h3>Configure, don't code</h3>
           <p>A rule engine and API-driven premium engine, so a new product goes live in days instead of weeks.</p>
           <span class="go">Read the case study</span>
+          <span class="thumb" aria-hidden="true"></span>
         </button>
       </div>
     </div>
@@ -284,7 +395,7 @@
 
   <section class="work" id="work">
     <div class="wrap">
-      <h2>Case studies</h2>
+      <h2 class="sec">Case studies</h2>
       <p class="sub">Problem, what I did, and what changed. All four are in production at Care Health Insurance. Click any screenshot to enlarge it.</p>
 
       <article class="case reveal" id="captain-care">
@@ -297,7 +408,7 @@
             <dt>What I did</dt>
             <dd>Grounded the model on a curated corpus of brochures, terms and conditions, exclusions and brand guidelines, retrieved at query time. Built the intent taxonomy from 3,000+ call-recording transcripts and live-chat logs, so it matches how customers actually phrase things rather than how the catalogue is organised. Wrote the guardrails with Compliance and InfoSec: IRDAI circulars encoded as refusal conditions, scope held to health insurance, no invented products. The interface opens by asking for a name, keeps a standing AI disclosure, and carries thumbs up and down on every answer so the corpus improves from real usage.</dd>
           </dl>
-          <p class="result">2,548 customer conversations and 153 qualified leads since launch, a 6% visit-to-lead ratio, with zero compliance incidents.</p>
+          <p class="result"><span class="num" data-n="2548">2,548</span> customer conversations and <span class="num" data-n="153">153</span> qualified leads since launch, a <span class="num" data-n="6" data-suffix="%">6%</span> visit-to-lead ratio, with zero compliance incidents.</p>
           <div class="links">
             <a class="btn" href="https://www.careinsurance.com/" target="_blank" rel="noopener">Try it on the homepage</a>
           </div>
@@ -322,7 +433,7 @@
             <dt>What I did</dt>
             <dd>Redesigned the journey around decision support. The engine takes location and number of members, retrieves and ranks quotes across products at runtime, pre-selects the most suitable plan and states why, and holds a live premium summary next to a three-way comparison. Sum insured and tenure stay editable, and the ranking updates on every change.</dd>
           </dl>
-          <p class="result">Straight-through processing improved 45% for Travel Insurance and 15% for Health Insurance.</p>
+          <p class="result">Straight-through processing improved <span class="num" data-n="45" data-suffix="%">45%</span> for Travel Insurance and <span class="num" data-n="15" data-suffix="%">15%</span> for Health Insurance.</p>
           <div class="links">
             <a class="btn" href="https://www.careinsurance.com/health-insurance/calculate-health-insurance-premium" target="_blank" rel="noopener">Run the calculator</a>
             <a class="btn" href="https://www.careinsurance.com/product/recommendation-quote?quoteid=6a9a8ffa52f93c9a1e9c2f1c" target="_blank" rel="noopener">Sample recommendation</a>
@@ -412,7 +523,7 @@
 
   <section class="platform" id="platform">
     <div class="wrap">
-      <h2>Platform work behind the journey</h2>
+      <h2 class="sec">Platform work behind the journey</h2>
       <p class="sub">Less visible, but this is what let the four products above ship and stay up.</p>
       <ul class="plist">
         <li><strong>On-premises to AWS, zero downtime</strong><span>Sequenced the consumer platform cutover across Engineering, Security and Operations.</span></li>
@@ -428,7 +539,7 @@
   <section class="about" id="about">
     <div class="wrap about-grid">
       <div>
-        <h2>About</h2>
+        <h2 class="sec">About</h2>
         <p>I came to product from B2B sales and CRM, then a PGDM at FORE, and joined Care Health Insurance as a Business Analyst in 2021. I moved into product management in 2023 and now lead the digital platform roadmap for New Business, with two direct reports. I'd rather ship a small improvement with a measurement plan than a large one without.</p>
         <ul class="tl">
           <li><time>2023 to now</time><div><strong>Product Manager, Digital Platform Capabilities &amp; AI</strong><span>Care Health Insurance, Gurugram</span></div></li>
@@ -465,11 +576,12 @@
 
 <footer id="contact">
   <div class="wrap">
+    <h2 class="sec" style="--u:center">Let's talk.</h2>
     <p>Open to senior product roles, and happy to walk through any of these in detail.</p>
     <div class="contact">
       <a class="btn primary" href="mailto:siddhant.shubham96@gmail.com">Email me</a>
       <a class="btn" href="https://linkedin.com/in/shubham-siddhant960527" target="_blank" rel="noopener">LinkedIn</a>
-      <a class="btn" href="tel:+919162220005">+91 91622 20005</a>
+      <a class="btn" id="phoneBtn" href="tel:+919162220005" data-phone="+91 91622 20005"><span id="phoneLabel">+91 91622 20005</span></a>
     </div>
   </div>
 </footer>
@@ -483,6 +595,9 @@
 <script>
 (function(){
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var canHover = window.matchMedia('(hover: hover)').matches;
+  var hasIO = 'IntersectionObserver' in window;
+  var each = function(list, fn){ Array.prototype.forEach.call(list, fn); };
 
   /* scroll progress + sticky header state */
   var bar = document.getElementById('progress'), hdr = document.getElementById('hdr'), ticking = false;
@@ -496,18 +611,16 @@
     if(!ticking){ window.requestAnimationFrame(onScroll); ticking = true; }
   }, {passive:true});
   onScroll();
+  function setHdrVar(){ document.documentElement.style.setProperty('--hdr', hdr.offsetHeight + 'px'); }
+  setHdrVar(); window.addEventListener('resize', setHdrVar);
 
-  /* in-page links scroll instead of navigating.
-     Anchor hrefs resolve against the document base URL, which breaks inside
-     iframes and previews, so handle the scroll ourselves. */
+  /* in-page links scroll instead of navigating */
   function scrollToEl(el){
     if(!el) return;
-    var top = el.getBoundingClientRect().top + window.pageYOffset - (hdr.offsetHeight + 14);
-    if(window.scrollTo && !reduce){
-      window.scrollTo({top: top, behavior:'smooth'});
-    } else {
-      window.scrollTo(0, top);
-    }
+    /* land the section's top edge flush under the sticky header (+1px so no sliver of the previous section shows) */
+    var top = Math.round(el.getBoundingClientRect().top + window.pageYOffset - hdr.offsetHeight + 1);
+    if(window.scrollTo && !reduce){ window.scrollTo({top: top, behavior:'smooth'}); }
+    else { window.scrollTo(0, top); }
   }
   document.addEventListener('click', function(e){
     var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
@@ -523,48 +636,154 @@
     try{ history.replaceState(null, '', '#' + id); }catch(err){}
   });
 
-  /* scrollspy nav */
-  var links = Array.prototype.slice.call(document.querySelectorAll('nav a'));
+  /* nav: sliding indicator + scrollspy */
+  var nav = document.querySelector('nav'), ind = nav.querySelector('.ind');
+  var links = Array.prototype.slice.call(nav.querySelectorAll('a'));
   var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
-  if('IntersectionObserver' in window && sections.length){
+  var activeLink = null;
+  function placeInd(target){
+    if(!target){ ind.style.opacity = '0'; return; }
+    var nr = nav.getBoundingClientRect(), r = target.getBoundingClientRect();
+    ind.style.transform = 'translate(' + (r.left - nr.left) + 'px,' + (r.top - nr.top) + 'px)';
+    ind.style.width = r.width + 'px';
+    ind.style.height = r.height + 'px';
+    ind.style.opacity = '1';
+  }
+  function setActive(id){
+    activeLink = null;
+    links.forEach(function(a){
+      var on = id && a.getAttribute('href') === '#' + id;
+      a.setAttribute('aria-current', on ? 'true' : 'false');
+      if(on) activeLink = a;
+    });
+    placeInd(activeLink);
+  }
+  if(canHover){
+    links.forEach(function(a){ a.addEventListener('mouseenter', function(){ placeInd(a); }); });
+    nav.addEventListener('mouseleave', function(){ placeInd(activeLink); });
+  }
+  window.addEventListener('resize', function(){ placeInd(activeLink); });
+  if(hasIO && sections.length){
     var visible = {};
     var spy = new IntersectionObserver(function(entries){
       entries.forEach(function(e){ visible[e.target.id] = e.isIntersecting; });
       var current = null;
       sections.forEach(function(s){ if(current === null && visible[s.id]) current = s.id; });
-      links.forEach(function(a){
-        a.setAttribute('aria-current', current && a.getAttribute('href') === '#' + current ? 'true' : 'false');
-      });
+      setActive(current);
     }, {rootMargin:'-40% 0px -55% 0px'});
     sections.forEach(function(s){ spy.observe(s); });
   }
 
-  /* reveal case studies once */
-  var reveals = document.querySelectorAll('.reveal');
-  if(reduce || !('IntersectionObserver' in window)){
-    Array.prototype.forEach.call(reveals, function(el){ el.classList.add('in'); });
-  } else {
-    var ro = new IntersectionObserver(function(entries, obs){
+  /* hero: words rise in sequence, then the supporting text */
+  var h1 = document.querySelector('.hero h1');
+  if(h1 && !reduce){
+    var words = h1.textContent.trim().split(/\s+/);
+    h1.textContent = '';
+    words.forEach(function(w, i){
+      var s = document.createElement('span');
+      s.className = 'w';
+      s.textContent = w;
+      s.style.transitionDelay = (i * 45) + 'ms';
+      h1.appendChild(s);
+      if(i < words.length - 1) h1.appendChild(document.createTextNode(' '));
+    });
+  }
+  function litHero(){
+    if(h1) h1.classList.add('lit');
+    each(document.querySelectorAll('.hero .fade'), function(el){ el.classList.add('lit'); });
+  }
+  if(reduce){ litHero(); } else { window.requestAnimationFrame(function(){ window.requestAnimationFrame(litHero); }); }
+
+  /* generic "when it enters view" helper, with a safety net so nothing stays hidden */
+  var pending = [];
+  function onEnter(el, fn, ratio, margin){
+    if(!el) return;
+    if(reduce || !hasIO){ fn(el); return; }
+    pending.push({el:el, fn:fn});
+    var io = new IntersectionObserver(function(entries, obs){
       entries.forEach(function(e){
-        if(e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target); }
+        if(e.isIntersecting){ fn(e.target); obs.unobserve(e.target); }
       });
-    }, {rootMargin:'0px 0px -12% 0px'});
-    Array.prototype.forEach.call(reveals, function(el){ ro.observe(el); });
-    setTimeout(function(){
-      Array.prototype.forEach.call(reveals, function(el){ el.classList.add('in'); });
-    }, 1200);
+    }, {threshold: ratio || 0, rootMargin: margin || '0px 0px -10% 0px'});
+    io.observe(el);
+  }
+  setTimeout(function(){
+    pending.forEach(function(x){
+      var r = x.el.getBoundingClientRect();
+      if(r.top < window.innerHeight) x.fn(x.el);   /* anything already on screen but never fired */
+    });
+  }, 1500);
+  window.addEventListener('load', function(){
+    setTimeout(function(){ pending.forEach(function(x){ x.fn(x.el); }); }, 6000); /* absolute fallback */
+  });
+
+  /* section heading underlines */
+  each(document.querySelectorAll('.journey, section.work, section.platform, section.about, footer'), function(sec){
+    onEnter(sec, function(el){ el.classList.add('in'); }, 0, '0px 0px -20% 0px');
+  });
+
+  /* journey rail: line draws, stops light in sequence; thumbnails come from the case studies */
+  var rail = document.querySelector('.rail');
+  each(document.querySelectorAll('.stop'), function(btn){
+    var target = document.getElementById(btn.getAttribute('data-target'));
+    var slot = btn.querySelector('.thumb');
+    var src = target && target.querySelector('.shot img');
+    if(slot && src){
+      var img = document.createElement('img');
+      img.src = src.getAttribute('src'); img.alt = '';
+      slot.appendChild(img);
+    }
+    btn.addEventListener('click', function(){
+      if(!target) return;
+      target.classList.add('in');
+      scrollToEl(target);
+      target.classList.add('flash');
+      setTimeout(function(){ target.classList.remove('flash'); }, 1500);
+    });
+  });
+  onEnter(rail, function(el){ el.classList.add('drawn'); }, 0.15, '0px 0px -10% 0px');
+
+  /* cursor glow across the dark section, hover devices only */
+  var journey = document.querySelector('.journey');
+  if(journey && canHover && !reduce){
+    journey.addEventListener('pointermove', function(e){
+      var r = journey.getBoundingClientRect();
+      journey.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+      journey.style.setProperty('--my', (e.clientY - r.top) + 'px');
+      journey.classList.add('glow');
+    });
+    journey.addEventListener('pointerleave', function(){ journey.classList.remove('glow'); });
   }
 
-  /* journey rail jumps to the matching case study */
-  Array.prototype.forEach.call(document.querySelectorAll('.stop'), function(btn){
-    btn.addEventListener('click', function(){
-      var el = document.getElementById(btn.getAttribute('data-target'));
-      if(!el) return;
-      el.classList.add('in');
-      scrollToEl(el);
-      el.classList.add('flash');
-      setTimeout(function(){ el.classList.remove('flash'); }, 1500);
-    });
+  /* case studies reveal with internal stagger (CSS handles the delays) */
+  each(document.querySelectorAll('.reveal'), function(el){
+    onEnter(el, function(x){ x.classList.add('in'); }, 0, '0px 0px -12% 0px');
+  });
+
+  /* platform rows + timeline rows: staggered */
+  each(document.querySelectorAll('.plist, .tl'), function(list){
+    var rows = list.querySelectorAll('li');
+    each(rows, function(li, i){ li.style.transitionDelay = (i * 70) + 'ms'; });
+    onEnter(list, function(){ each(rows, function(li){ li.classList.add('in'); }); }, 0, '0px 0px -10% 0px');
+  });
+
+  /* counters: numbers tick up when their paragraph is seen */
+  function fmt(n){ return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  each(document.querySelectorAll('.num'), function(el){
+    var to = parseFloat(el.getAttribute('data-n')), suffix = el.getAttribute('data-suffix') || '';
+    if(reduce || !hasIO || isNaN(to)) return;
+    el.textContent = '0' + suffix;
+    onEnter(el, function(){
+      var start = null, dur = 1100;
+      function step(t){
+        if(start === null) start = t;
+        var p = Math.min(1, (t - start) / dur);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = fmt(to * eased) + suffix;
+        if(p < 1) window.requestAnimationFrame(step); else el.textContent = fmt(to) + suffix;
+      }
+      window.requestAnimationFrame(step);
+    }, 0.5, '0px 0px -8% 0px');
   });
 
   /* lightbox */
@@ -581,22 +800,32 @@
     lastFocus = btn;
     lb.classList.add('open');
     document.body.style.overflow = 'hidden';
+    window.requestAnimationFrame(function(){ lb.classList.add('shown'); });
     lbClose.focus();
   }
   function closeLb(){
+    lb.classList.remove('shown');
     lb.classList.remove('open');
     lbImg.removeAttribute('src');
     document.body.style.overflow = '';
     if(lastFocus) lastFocus.focus();
   }
-  Array.prototype.forEach.call(document.querySelectorAll('.shot'), function(b){
-    b.addEventListener('click', function(){ openLb(b); });
-  });
+  each(document.querySelectorAll('.shot'), function(b){ b.addEventListener('click', function(){ openLb(b); }); });
   lbClose.addEventListener('click', closeLb);
   lb.addEventListener('click', function(e){ if(e.target === lb) closeLb(); });
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape' && lb.classList.contains('open')) closeLb();
-  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && lb.classList.contains('open')) closeLb(); });
+
+  /* phone: on a laptop there is usually no dialler, so also copy the number and say so */
+  var phoneBtn = document.getElementById('phoneBtn'), phoneLabel = document.getElementById('phoneLabel');
+  if(phoneBtn && canHover && navigator.clipboard && navigator.clipboard.writeText){
+    phoneBtn.addEventListener('click', function(){
+      navigator.clipboard.writeText(phoneBtn.getAttribute('data-phone')).then(function(){
+        phoneLabel.textContent = 'Number copied';
+        phoneLabel.className = 'ok';
+        setTimeout(function(){ phoneLabel.textContent = phoneBtn.getAttribute('data-phone'); phoneLabel.className = ''; }, 1800);
+      }, function(){});
+    });
+  }
 
   /* copy email */
   var copyBtn = document.getElementById('copyMail'), label = document.getElementById('copyLabel');
@@ -609,9 +838,7 @@
     }
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(mail).then(done, function(){ window.location.href = 'mailto:' + mail; });
-    } else {
-      window.location.href = 'mailto:' + mail;
-    }
+    } else { window.location.href = 'mailto:' + mail; }
   });
 })();
 </script>
