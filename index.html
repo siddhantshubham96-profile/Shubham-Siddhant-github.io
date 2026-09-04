@@ -24,7 +24,7 @@
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth;scroll-padding-top:88px}
-  html,body{overflow-x:hidden;max-width:100%}
+  html,body{overflow-x:clip}
   img{max-width:100%}
   body{
     margin:0;background:var(--paper);color:var(--ink);
@@ -51,7 +51,7 @@
     text-decoration:none;color:var(--slate);font-size:15px;padding:6px 12px;border-radius:999px;
     transition:color .2s var(--ease),background-color .2s var(--ease);
   }
-  nav a:hover{color:var(--ink);background:#f0f3f4}
+  @media (hover:hover){nav a:hover{color:var(--ink);background:#f0f3f4}}
   nav a[aria-current="true"]{color:var(--ink);background:var(--mint)}
 
   /* ---------- hero (two-column) ---------- */
@@ -68,10 +68,10 @@
     padding:10px 20px;border-radius:999px;border:1px solid var(--rule);background:#fff;color:var(--ink);
     text-decoration:none;transition:border-color .2s var(--ease),background-color .2s var(--ease),transform .15s var(--ease);
   }
-  .btn:hover{border-color:var(--ink);background:#fafbfb;color:var(--ink);transform:translateY(-1px)}
+  @media (hover:hover){.btn:hover{border-color:var(--ink);background:#fafbfb;color:var(--ink);transform:translateY(-1px)}}
   .btn:active{transform:translateY(0)}
   .btn.primary{background:var(--ink);border-color:var(--ink);color:#fff}
-  .btn.primary:hover{background:#0d1620;color:#fff}
+  @media (hover:hover){.btn.primary:hover{background:#0d1620;color:#fff}}
   .btn .ok{color:var(--green);font-weight:600}
 
   /* ---------- journey rail ---------- */
@@ -126,7 +126,7 @@
     background:#fff;cursor:zoom-in;transition:border-color .2s var(--ease),box-shadow .2s var(--ease),transform .2s var(--ease);
   }
   .shot img{width:100%;height:auto;display:block}
-  .shot:hover{border-color:#aeb8c1;box-shadow:0 6px 20px rgba(23,32,43,.10);transform:translateY(-2px)}
+  @media (hover:hover){.shot:hover{border-color:#aeb8c1;box-shadow:0 6px 20px rgba(23,32,43,.10);transform:translateY(-2px)}}
   figcaption{font-size:13px;color:var(--slate);margin-top:7px;line-height:1.4}
 
   /* ---------- lightbox ---------- */
@@ -527,14 +527,15 @@
   var links = Array.prototype.slice.call(document.querySelectorAll('nav a'));
   var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
   if('IntersectionObserver' in window && sections.length){
+    var visible = {};
     var spy = new IntersectionObserver(function(entries){
-      entries.forEach(function(e){
-        if(!e.isIntersecting) return;
-        links.forEach(function(a){
-          a.setAttribute('aria-current', a.getAttribute('href') === '#' + e.target.id ? 'true' : 'false');
-        });
+      entries.forEach(function(e){ visible[e.target.id] = e.isIntersecting; });
+      var current = null;
+      sections.forEach(function(s){ if(current === null && visible[s.id]) current = s.id; });
+      links.forEach(function(a){
+        a.setAttribute('aria-current', current && a.getAttribute('href') === '#' + current ? 'true' : 'false');
       });
-    }, {rootMargin:'-45% 0px -50% 0px'});
+    }, {rootMargin:'-40% 0px -55% 0px'});
     sections.forEach(function(s){ spy.observe(s); });
   }
 
